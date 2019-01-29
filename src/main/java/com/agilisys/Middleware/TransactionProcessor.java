@@ -2,16 +2,14 @@ package com.agilisys.Middleware;
 
 import com.agilisys.Models.Status;
 import com.agilisys.Models.Transaction;
-import com.agilisys.Services.AccountService;
-import com.agilisys.Services.InMemoryRepository;
+import com.agilisys.Services.PaymentsService;
 
 import java.util.Date;
 
 public class TransactionProcessor implements PaymentMiddleware {
 
     private PaymentMiddleware next;
-    private InMemoryRepository repository = InMemoryRepository.getInstance();
-    private static final AccountService accountService = AccountService.getInstance();
+    private static final PaymentsService paymentsService = PaymentsService.getInstance();
 
     @Override
     public void setNext(PaymentMiddleware next) {
@@ -22,26 +20,17 @@ public class TransactionProcessor implements PaymentMiddleware {
     public synchronized void process(Transaction t) {
         /* atomic block */
 
-    if (t.getStatus() == Status.ACCEPTED){
+        if (t.getStatus() == Status.ACCEPTED) {
+            /*only ACCEPTED transactions are processed*/
 
-
-            accountService.processPayment(t);
-
-        if ( validTransaction(t)) {
+            paymentsService.processPayment(t);
             t.setEndDate(new Date());
+            t.setMessage("Transaction succesfully completed");
             t.setStatus(Status.COMPLETED);
-        } else {
-            t.setStatus(Status.SUSPENDED);
-            //TODO: Y aca que pinta?
+            logger.info("Transaction " + t.getId() + " changed status to " + t.getStatus().toString());
+            paymentsService.saveTransaction(t);
+            logger.info("Transaction " + t.getId() + " saved to db");
         }
-        repository.saveTransaction(t);
-    }
-    //TODO: Y aca que pinta?
-    }
 
-    private boolean validTransaction(Transaction t) {
-        //TODO: Como validar transaccion?
-        return true;
     }
-
 }

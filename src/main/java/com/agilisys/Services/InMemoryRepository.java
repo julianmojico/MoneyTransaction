@@ -13,7 +13,7 @@ public class InMemoryRepository {
         if (instance == null) {
             instance = new InMemoryRepository();
         }
-            return instance;
+        return instance;
     }
 
     private InMemoryRepository() {
@@ -36,27 +36,39 @@ public class InMemoryRepository {
         db = jsonDBTemplate;
     }
 
-    public void insertTransaction(Transaction t){
+    void insertTransaction(Transaction t) {
         db.insert(t);
     }
 
-    public void saveTransaction(Transaction t){
-        db.save(t,Transaction.class);
+    void saveTransaction(Transaction t) {
+        db.save(t, Transaction.class);
     }
 
-    public void saveAccount(Account acc){
+    void saveAccount(Account acc) {
         db.save(acc, Account.class);
     }
 
-    public Object queryTransaction(String id){
-       return db.findById(id, Transaction.class);
+    public Transaction queryTransaction(String id) {
+        return db.findById(id, Transaction.class);
     }
 
-    public Account queryAccount(int id){
+    Account queryAccount(int id) {
         return db.findById(id, Account.class);
     }
 
-    public void insertAccount(Account account) {
+    void insertAccount(Account account) {
         db.insert(account);
     }
+
+    void deleteAccounts() {
+        db.dropCollection(Account.class);
+        db.createCollection(Account.class);
+    }
+
+    void deleteTransactionById(String uuid) {
+        String jxQuery = String.format("/.[id='%s']", "1234");
+        db.findAndRemove(jxQuery, Transaction.class);
+//        db.findOne(jxQuery, Transaction.class);
+    }
+
 }

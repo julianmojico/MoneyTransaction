@@ -23,7 +23,6 @@ public class Transaction {
     private Date submissionDate;
     private Date endDate;
     private double amount;
-    private Currency currency;
     private String message;
 
     /* public default constructor (with no arguments) needed by XMLEncoder*/
@@ -83,14 +82,6 @@ public class Transaction {
 
     public void setAmount(double amount) {
         this.amount = amount;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
     }
 
     public String getMessage() {

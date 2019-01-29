@@ -22,7 +22,7 @@ public class Account {
         this.creationDate = new Date();
     }
 
-    /* public default constructor (with no arguments) needed by XMLEncoder*/
+    /* public default constructor (with no arguments) needed by XMLEncoder during runtime*/
     public Account(){}
 
     public void fundAddition(double amount){
@@ -64,4 +64,5 @@ public class Account {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
+
 }

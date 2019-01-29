@@ -1,8 +1,8 @@
 package com.agilisys.Models;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import javax.ws.rs.ext.Provider;
 
-@JsonRootName(value = "error")
+@Provider
 public class Error {
 
     private String statusDescription;
@@ -11,6 +11,10 @@ public class Error {
     public Error(String statusDescription, String errorMessage) {
         this.statusDescription = statusDescription;
         this.errorMessage = errorMessage;
+    }
+
+    public Error() {
+
     }
 
     public String getStatusDescription() {
