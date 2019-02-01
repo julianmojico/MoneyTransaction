@@ -1,13 +1,17 @@
 package com.agilisys;
 
-import com.agilisys.Configuration.ApplicationResourceConfig;
 import com.agilisys.Models.Account;
 import com.agilisys.Models.Error;
 import com.agilisys.Models.Transaction;
-import com.agilisys.Services.PaymentsService;
+import com.agilisys.RestServices.AccountRestService;
+import com.agilisys.RestServices.TransactionRestService;
+import com.agilisys.Services.BusinessService;
 import org.eclipse.jetty.http.HttpHeader;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Before;
+import org.glassfish.jersey.test.jetty.JettyTestContainerFactory;
+import org.glassfish.jersey.test.spi.TestContainerFactory;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.ws.rs.client.Entity;
@@ -20,17 +24,22 @@ import static org.junit.Assert.assertEquals;
 
 public class RestIntegrationTest extends JerseyTest {
 
-    private static final PaymentsService paymentsService = PaymentsService.getInstance();
-    private Transaction tr = new Transaction();
+    private static final BusinessService repository = BusinessService.getInstance();
+    private static Transaction tr = new Transaction();
 
-    @Before
-    public void initObjects() {
+    @BeforeClass
+    public static void initObjects() {
 
         /*Initialize sample data*/
-        this.tr.setSourceAccount(1);
-        this.tr.setDestAccount(2);
-        paymentsService.loadSampleData();
+        tr.setSourceAccount(1);
+        tr.setDestAccount(2);
+        repository.loadSampleData();
 
+    }
+
+    @Override
+    public TestContainerFactory getTestContainerFactory() {
+        return new JettyTestContainerFactory();
     }
 
     @Test
@@ -43,7 +52,7 @@ public class RestIntegrationTest extends JerseyTest {
     }
 
     @Test
-    public void testAccount() {
+    public void getAccount() {
         Response output = target("/api/account/1").request().get();
         Account bodyOutput = output.readEntity(Account.class);
         assertEquals("Julian", bodyOutput.getOwner());
@@ -53,7 +62,7 @@ public class RestIntegrationTest extends JerseyTest {
     }
 
     @Test
-    public void resourceNotFound() {
+    public void testResourceNotFound() {
         Response output = target("/api/unexistant").request(MediaType.APPLICATION_JSON_TYPE).get();
         Error bodyOutput = output.readEntity(Error.class);
         assertEquals("HTTP 404 Not Found", bodyOutput.getErrorMessage());
@@ -75,20 +84,20 @@ public class RestIntegrationTest extends JerseyTest {
     }
 
     @Test
-    public void testTransactionCompleted() {
+    public void postTransactionCompleted() {
 
         tr.setAmount(300);
         Response output = target("/api/transaction").request().post(Entity.entity(tr, MediaType.APPLICATION_JSON));
         Transaction bodyOutput = output.readEntity(Transaction.class);
-        assertEquals(bodyOutput.getMessage(), "Transaction succesfully completed");
+        assertEquals("Transaction succesfully completed", bodyOutput.getMessage());
         assertEquals(MediaType.APPLICATION_JSON, output.getHeaders().get(HttpHeader.CONTENT_TYPE.toString()).get(0));
-        assertEquals(bodyOutput.getStatus().toString(), "COMPLETED");
-        assertEquals(output.getStatus(), 200);
+        assertEquals("COMPLETED", bodyOutput.getStatus().toString());
+        assertEquals(200, output.getStatus());
 
     }
 
     @Test
-    public void testTransactionDeclined() {
+    public void postTransactionDeclined() {
 
         tr.setAmount(99999);
         Response output = target("/api/transaction").request().post(Entity.entity(tr, MediaType.APPLICATION_JSON_TYPE));
@@ -101,7 +110,7 @@ public class RestIntegrationTest extends JerseyTest {
     }
 
     @Test
-    public void queryTransaction() {
+    public void getTransaction() {
 
         Response output = target("/api/transaction/1234").request().get();
         Transaction bodyOutput = output.readEntity(Transaction.class);
@@ -113,10 +122,32 @@ public class RestIntegrationTest extends JerseyTest {
 
     }
 
-    /* Implementation required by JerseyTest*/
+    @Test
+    public void putAccount() {
+
+        Account account = new Account();
+        account.setId(2);
+        account.setOwner("NewOwner");
+        Response output = target("/api/account").request().put(Entity.entity(account, MediaType.APPLICATION_JSON));
+
+        Account bodyOutput = output.readEntity(Account.class);
+        assertEquals(account.getId(), bodyOutput.getId());
+        assertEquals(account.getCurrentFunds(), bodyOutput.getCurrentFunds(), 0);
+        assertEquals(account.getOwner(), "NewOwner");
+        assertEquals(MediaType.APPLICATION_JSON, output.getHeaders().get(HttpHeader.CONTENT_TYPE.toString()).get(0));
+        assertEquals(output.getStatus(), 200);
+
+    }
+
+    /* Minimal Application implementation for JerseyTest*/
     public Application configure() {
 
-        ApplicationResourceConfig config = new ApplicationResourceConfig();
+        ResourceConfig config = new ResourceConfig();
+        config.register(TransactionRestService.class);
+        config.register(AccountRestService.class);
+        config.setApplicationName("MoneyTransactionAPI");
+        config.getConfiguration();
+        config.packages("com.agilisys");
         return config.getApplication();
     }
 

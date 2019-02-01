@@ -1,18 +1,16 @@
 package com.agilisys.Middleware;
-
 import com.agilisys.Models.Transaction;
-import com.agilisys.Services.InMemoryRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.agilisys.Services.BusinessService;
+
+import java.util.logging.Logger;
 
 public interface PaymentMiddleware {
     /* Implementing allows additional procedures in Payment chain functionality */
 
-    Logger logger = LoggerFactory.getLogger(PaymentMiddleware.class);
+    BusinessService businessService = BusinessService.getInstance();
+    Logger logger = Logger.getLogger("MoneyTransactionAPI");
     PaymentMiddleware next = null;
-    InMemoryRepository repository = null;
 
     void setNext(PaymentMiddleware next);
-
     void process(Transaction t);
 }

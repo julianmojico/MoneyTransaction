@@ -1,12 +1,15 @@
 package com.agilisys.Models;
 
+import com.agilisys.Util.GetterAndSetter;
 import io.jsondb.annotation.Document;
 import io.jsondb.annotation.Id;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 @Document(collection = "Accounts", schemaVersion = "1.0")
-//@XmlRootElement
 public class Account {
 
     @Id
@@ -15,8 +18,8 @@ public class Account {
     private double currentFunds;
     private Date creationDate;
 
-    public Account(int id, String owner){
-        this.id = id;
+    public Account(String owner) {
+
         this.owner = owner;
         currentFunds = 0;
         this.creationDate = new Date();
@@ -65,4 +68,16 @@ public class Account {
         this.creationDate = creationDate;
     }
 
+    public void updateAccount(Account newFields) {
+
+        ArrayList<Field> fields = new ArrayList<>(Arrays.asList(newFields.getClass().getDeclaredFields()));
+        fields.forEach(
+                field -> {
+                    Object value = GetterAndSetter.callGetter(newFields, field.getName());
+                    if (value != null) {
+                        GetterAndSetter.callSetter(this, field.getName(), value);
+                    }
+                }
+        );
+    }
 }
