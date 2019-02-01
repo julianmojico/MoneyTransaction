@@ -1,10 +1,20 @@
 # MoneyTransaction
-MoneyTransaction REST API using JAX-RS, Jetty servlet, Jersey and jsondb In-memory database.
+>MoneyTransaction REST API using JAX-RS, Jersey, embedded Jetty server and Jsondb In-memory database.
+>Packaged in a single jar :package: :+1:
 
+```
+git clone https://github.com/cepix/MoneyTransaction
+mvn verify
+mvn install
+java -jar MoneyTransaction/target/MoneyTransaction-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
 
-## :one: mvn verify
-## :two: mvn install
-## :three:  java -jar MoneyTransaction/target/MoneyTransaction-1.0-SNAPSHOT-jar-with-dependencies.jar
-## :four:  Swagger API docs available at localhost:8000/docs :four_leaf_clover:
-## :five:  Logs are saved to MoneyTransactionAPI.log
-## :six: Available endpoints /api/account and /api/transaction  :rocket:
+## Swagger API docs available :four_leaf_clover:
+http://localhost:8000/docs
+
+## Logs :page_facing_up:
+MoneyTransactionAPI.log
+
+## Available endpoints :rocket:
+- /api/account
+- /api/transaction
