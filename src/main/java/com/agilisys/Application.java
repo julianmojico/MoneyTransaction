@@ -4,7 +4,10 @@ import com.agilisys.Configuration.ApplicationResourceConfig;
 import com.agilisys.Services.BusinessService;
 import org.eclipse.jetty.server.Server;
 
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 
 public class Application extends javax.ws.rs.core.Application {
@@ -41,11 +44,6 @@ public class Application extends javax.ws.rs.core.Application {
     private static void configLogger() {
 
         logger.setLevel(Level.INFO);
-
-        final ConsoleHandler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.FINEST);
-        consoleHandler.setFormatter(new SimpleFormatter());
-        logger.addHandler(consoleHandler);
 
         FileHandler fh = null;
         try {

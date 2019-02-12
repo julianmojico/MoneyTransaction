@@ -4,5 +4,6 @@ public enum Status {
 
     DECLINED,
     COMPLETED,
-    ACCEPTED
+    ACCEPTED,
+    FAILED
 }

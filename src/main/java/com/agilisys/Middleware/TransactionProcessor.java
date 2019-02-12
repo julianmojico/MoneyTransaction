@@ -22,13 +22,23 @@ public class TransactionProcessor implements PaymentMiddleware {
         if (t.getStatus() == Status.ACCEPTED) {
             /*only ACCEPTED transactions are processed*/
 
-            processPayment(t);
-            t.setEndDate(new Date());
-            t.setMessage("Transaction succesfully completed");
-            t.setStatus(Status.COMPLETED);
+            if (processPayment(t)) {
+                t.setEndDate(new Date());
+                t.setMessage("Transaction succesfully completed");
+                t.setStatus(Status.COMPLETED);
+
+            } else {
+
+                t.setEndDate(new Date());
+                t.setMessage("Transaction failed");
+                t.setStatus(Status.FAILED);
+
+            }
+
             logger.info("Transaction " + t.getId() + " changed status to " + t.getStatus().toString());
             businessService.saveTransaction(t);
             logger.info("Transaction " + t.getId() + " saved to db");
+
         }
 
     }

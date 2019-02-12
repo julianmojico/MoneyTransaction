@@ -15,13 +15,15 @@ import javax.ws.rs.core.MediaType;
 @ApiModel(subTypes = {Transaction.class})
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+
 public class TransactionRestService {
 
     private static final PaymentMiddleware chain = getPaymentMiddleware();
     private BusinessService repository = BusinessService.getInstance();
 
+    /* Method that builds and return Chain of Responsability for payment processing */
     private static PaymentMiddleware getPaymentMiddleware() {
-        /* Build Chain of Responsability for payment processing */
+
 
         PaymentMiddleware validator = new TransactionValidator();
         PaymentMiddleware processor = new TransactionProcessor();
@@ -42,7 +44,7 @@ public class TransactionRestService {
         chain.process(t);
         return t;
     }
-    /*Transactions are not meant to be deleted or modified; no DELETE or PATCH methods*/
+    /*Transactions are not meant to be deleted or modified hence no DELETE or PATCH methods exist*/
 
     @GET
     @ApiModelProperty(required = true, example = "1234")
