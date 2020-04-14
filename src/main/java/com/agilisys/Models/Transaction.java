@@ -11,7 +11,7 @@ import java.util.Date;
 @Document(collection = "Transactions", schemaVersion = "1.0")
 public class Transaction {
 
-    /*Model heavily annotated to allow Swagger definition and request examples*/
+    /*Model heavily annotated to allow Swagger definitions and sample requests*/
 
     @Id
     @ApiModelProperty(hidden = true)
@@ -22,6 +22,12 @@ public class Transaction {
     @NotNull
     @ApiModelProperty(required = true, example = "2")
     private int destAccount;
+    @NotNull
+    @ApiModelProperty(required = true, example = "CREDIT")
+    private PaymentType type;
+    @NotNull
+    @ApiModelProperty(required = true, example = "Groceries")
+    private String description;
     @ApiModelProperty(hidden = true)
     private Status status;
     @ApiModelProperty(hidden = true)
@@ -100,5 +106,21 @@ public class Transaction {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public PaymentType getType() {
+        return type;
+    }
+
+    public void setType(PaymentType type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

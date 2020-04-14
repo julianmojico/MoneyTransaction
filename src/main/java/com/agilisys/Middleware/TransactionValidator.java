@@ -45,8 +45,11 @@ public class TransactionValidator implements PaymentMiddleware {
     }
 
     private boolean isValidRequest(Transaction tr) {
-
-        return (isValidAmount(tr) && validAccounts(tr));
+        int source = tr.getSourceAccount();
+        int dest = tr.getDestAccount();
+        boolean isValid = (isValidAmount(tr) && validAccounts(tr) && (source != dest));
+        tr.setMessage("Invalid transaction request; verify source and destination accounts are both valid");
+        return isValid;
     }
 
     private boolean isValidAmount(Transaction tr) {

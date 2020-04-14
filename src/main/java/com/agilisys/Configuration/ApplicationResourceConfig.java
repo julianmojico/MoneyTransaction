@@ -45,8 +45,7 @@ public class ApplicationResourceConfig extends ResourceConfig {
 
     private static ContextHandler buildContext() {
         ResourceConfig resourceConfig = new ResourceConfig();
-        // Replace EntityBrowser with your resource class
-        // io.swagger.jaxrs.listing loads up Swagger resources
+        resourceConfig.register(new CORSFilter());
         resourceConfig.packages(TransactionRestService.class.getPackage().getName(), ApiListingResource.class.getPackage().getName());
         ServletContainer servletContainer = new ServletContainer(resourceConfig);
         ServletHolder entityBrowser = new ServletHolder(servletContainer);

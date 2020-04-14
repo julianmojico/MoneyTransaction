@@ -1,4 +1,4 @@
-package com.agilisys.Services;
+package com.agilisys.RestServices;
 
 import com.agilisys.Models.Account;
 import com.agilisys.Models.Status;
@@ -6,7 +6,10 @@ import com.agilisys.Models.Transaction;
 import io.jsondb.JsonDBTemplate;
 
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -78,13 +81,28 @@ public class BusinessService {
         return repository.findById(id, Account.class);
     }
 
+    public List<Transaction> retrieveAccountTransactions(int id) {
+        ArrayList output = new ArrayList<>();
+        String jxQuerySource = String.format("/.[sourceAccount='%s']", id);
+        String jxQueryDest = String.format("/.[destAccount='%s']", id);
+        Collection sourceTransactions = repository.find(jxQuerySource, Transaction.class);
+        Collection destTransactions = repository.find(jxQueryDest, Transaction.class);
+        if (!sourceTransactions.isEmpty()) {
+            output.addAll(sourceTransactions);
+        }
+        if (!destTransactions.isEmpty()) {
+            output.addAll(destTransactions);
+        }
+        return output;
+    }
+
     public void deleteAccounts() {
         repository.dropCollection(Account.class);
         repository.createCollection(Account.class);
     }
 
     public void deleteTransactionById(String uuid) {
-        String jxQuery = String.format("/.[id='%s']", "1234");
+        String jxQuery = String.format("/.[id='%s']", uuid);
         repository.findAndRemove(jxQuery, Transaction.class);
     }
 
@@ -99,8 +117,6 @@ public class BusinessService {
         } else {
             throw new BadRequestException("Account owner cannot be null");
         }
-
-
     }
 
     public boolean existingAccount(int id) {
@@ -129,12 +145,13 @@ public class BusinessService {
 
         Transaction sampleTransaction = new Transaction();
         sampleTransaction.setAmount(100);
-        sampleTransaction.setId("1234");
+//        sampleTransaction.setId("1234");
         sampleTransaction.setDestAccount(2);
         sampleTransaction.setSourceAccount(1);
         sampleTransaction.setStatus(Status.COMPLETED);
+        sampleTransaction.setEndDate(new Date());
 
-        deleteTransactionById("1234");
+//        deleteTransactionById("1234");
         insertTransaction(sampleTransaction);
 
 

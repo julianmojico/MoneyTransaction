@@ -4,7 +4,6 @@ import com.agilisys.Middleware.PaymentMiddleware;
 import com.agilisys.Middleware.TransactionProcessor;
 import com.agilisys.Middleware.TransactionValidator;
 import com.agilisys.Models.Transaction;
-import com.agilisys.Services.BusinessService;
 import io.swagger.annotations.*;
 
 import javax.ws.rs.*;
@@ -44,10 +43,10 @@ public class TransactionRestService {
         chain.process(t);
         return t;
     }
-    /*Transactions are not meant to be deleted or modified hence no DELETE or PATCH methods exist*/
 
+    /*Transactions are not meant to be deleted or modified hence no DELETE or PATCH methods exist*/
     @GET
-    @ApiModelProperty(required = true, example = "1234")
+    @ApiModelProperty(required = true)
     @Path("/transaction/{uuid}")
     public Transaction queryTransaction(@PathParam(value = "uuid") @ApiParam(value = "uuid") String uuid) {
         return repository.queryTransaction(uuid);

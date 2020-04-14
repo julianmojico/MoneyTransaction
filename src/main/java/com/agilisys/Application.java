@@ -1,7 +1,7 @@
 package com.agilisys;
 
 import com.agilisys.Configuration.ApplicationResourceConfig;
-import com.agilisys.Services.BusinessService;
+import com.agilisys.RestServices.BusinessService;
 import org.eclipse.jetty.server.Server;
 
 import java.util.logging.FileHandler;
@@ -22,7 +22,7 @@ public class Application extends javax.ws.rs.core.Application {
             /* Initialize businessService*/
             BusinessService.getInstance();
 
-            /*Initialize sample data*/
+            //Initialize sample data
             repository.loadSampleData();
 
             /*Config the server*/

@@ -1,6 +1,6 @@
 package com.agilisys.Middleware;
 import com.agilisys.Models.Transaction;
-import com.agilisys.Services.BusinessService;
+import com.agilisys.RestServices.BusinessService;
 
 import java.util.logging.Logger;
 
